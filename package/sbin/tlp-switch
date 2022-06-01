@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+function sentnot(){
+who |
+while read line
+do
+    if ( echo $line | grep tty )
+    then
+        TEM=$line
+        user=${TEM%%" "*}
+        TEM2=${TEM%*')'}
+        display=${TEM2##*'('}
+        uid=`id -u $user`
+        sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send "$@" &
+    fi
+done
+sleep 0.1
+exit 0
+}
+
+function makedefault(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+[ -f /etc/tlp.d/00-template.conf ] || touch /etc/tlp.d/00-template.conf
+[ -f $TLPPATH2/default.conf ] || touch $TLPPATH2/default.conf
+}
+
+function setdefault(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+[ -f /etc/tlp.d/00-template.conf ] || touch /etc/tlp.d/00-template.conf
+cp $TLPPATH2/$1.conf $TLPPATH2/default.conf
+}
+
+function switch(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+rm /etc/tlp.d/??-*.conf
+touch /etc/tlp.d/00-template.conf
+if [ -f $TLPPATH2/$1.conf ]
+then
+    mountpoint /etc/tlp.d/00-template.conf && umount -fl /etc/tlp.d/00-template.conf
+    mount --bind $TLPPATH2/$1.conf /etc/tlp.d/00-template.conf
+    tlp start
+    [ -d /run/tlp-switch ] || mkdir /run/tlp-switch
+    [ -f /run/tlp-switch/current ] || touch /run/tlp-switch/current
+    echo $1 > /run/tlp-switch/current
+    TEM3=`tlp-stat -p|grep scaling_governor`
+    sentnot -a tlp-switch -i /usr/local/share/tlp-switch/tlp-switch.png "Switched to power mode $1" "CPU governor: ${TEM3#*=}"
+else
+    echo "No such power level."
+    sentnot -a tlp-switch -i /usr/local/share/tlp-switch/tlp-switch.png "Switch power mode failed."
+fi
+}
+
+function switch-quiet(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+rm /etc/tlp.d/??-*.conf
+touch /etc/tlp.d/00-template.conf
+if [ -f $TLPPATH2/$1.conf ]
+then
+    mountpoint /etc/tlp.d/00-template.conf && umount -fl /etc/tlp.d/00-template.conf
+    mount --bind $TLPPATH2/$1.conf /etc/tlp.d/00-template.conf
+    tlp start
+    [ -d /run/tlp-switch ] || mkdir /run/tlp-switch
+    [ -f /run/tlp-switch/current ] || touch /run/tlp-switch/current
+    echo $1 > /run/tlp-switch/current
+    TEM3=`tlp-stat -p|grep scaling_governor`
+else
+    echo "No such power level."
+fi
+}
+
+function new(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+[ -f /etc/tlp.d/00-template.conf ] || touch /etc/tlp.d/00-template.conf
+if [ -f $TLPPATH2/$1.conf ]
+then
+    echo "Such power level already exists."
+else
+    touch $TLPPATH2/$1.conf
+fi
+}
+
+function edit(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+[ -f /etc/tlp.d/00-template.conf ] || touch /etc/tlp.d/00-template.conf
+[ -f $TLPPATH2/$1.conf ] || touch $TLPPATH2/$1.conf
+if [ ! $EDITOR ]
+then
+    echo "Please input editor you want to use. ie: nano,vim..."
+    read EDITOR
+fi
+$EDITOR $TLPPATH2/$1.conf
+}
+
+
+function delete(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+[ -f /etc/tlp.d/00-template.conf ] || touch /etc/tlp.d/00-template.conf
+if [ -f $TLPPATH2/$1.conf ]
+then
+    rm -rf $TLPPATH2/$1.conf
+else
+    echo "No such power level."
+fi
+makedefault
+}
+
+function list(){
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+for tem2 in `ls $TLPPATH2`
+    do
+        echo ${tem2%.*}
+    done
+}
+
+function showc(){
+    [ -d /run/tlp-switch ] || mkdir /run/tlp-switch
+    [ -f /run/tlp-switch/states ] || touch /run/tlp-switch/states
+    tlp-stat -p>/run/tlp-switch/states
+}
+
+function showhelp(){
+
+echo "usage: $0 <command>"
+echo "<command>:"
+echo "new <name>            add new power level with <name>"
+echo "edit <name>           edit existing power level, will make a new one if <name> is not used"
+echo "delete <name>         delete existing power level, if delete the default it will be reset"
+echo "switch <name>         switch to the power level"
+echo "switch-quiet <name>   switch to the power level without notifying"
+echo "set-default <name>    set the power level as default"
+echo "list                  list all existing power level"
+echo "show                  show current power level"
+echo "help                  show this help"
+echo
+echo "note:"
+echo "      Please do not use space in <name>"
+echo "      Save PATH is /etc/tlp.d/switch"
+}
+
+makedefault
+case $1 in
+    new)
+    new $2
+    ;;
+    edit)
+    edit $2
+    ;;
+    delete)
+    delete $2
+    ;;
+    switch)
+    switch $2
+    ;;
+    switch-quiet)
+    switch-quiet $2
+    ;;
+    list)
+    list
+    ;;
+    show)
+    showc
+    ;;
+    set-default)
+    setdefault $2
+    ;;
+    *)
+    showhelp
+    ;;
+esac
+

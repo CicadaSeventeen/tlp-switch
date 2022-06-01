@@ -1,0 +1,10 @@
+[Unit]
+Description=TLP-Switch Daemon
+After=tlp.service
+
+[Service]
+ExecStart=sh -c "tlp-switch-daemon"
+
+[Install]
+WantedBy=graphical.target
+

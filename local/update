@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+[ -d /usr/local/bin ] || mkdir -p /usr/local/bin
+[ -d /usr/local/share ] || mkdir -p /usr/local/share
+[ -d /usr/local/sbin ] || mkdir -p /usr/local/sbin
+[ -d /etc/systemd/system ] || mkdir -p /etc/systemd/system
+[ -d /usr/local/share/tlp-switch ] || mkdir -p /usr/local/share/tlp-switch
+systemctl disable tlp-switch-daemon.service
+rm /usr/local/share/tlp-swich.png
+cp ./bin/* /usr/local/bin/
+cp ./sbin/* /usr/local/sbin/
+cp ./etc/systemd/system/* /etc/systemd/system/
+cp ./share/tlp-switch/* /usr/local/share/tlp-switch/
+systemctl enable tlp-switch-daemon.service
+chmod 755 /usr/local/bin/tlp-switch-user
+chmod 754 /usr/local/sbin/tlp-switch
+chmod 754 /usr/local/sbin/tlp-switch-daemon
+chmod 755 /usr/local/share/tlp-switch/tlp-swich.png
+
+

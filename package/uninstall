@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+systemctl disable tlp-switch-daemon.service
+rm /usr/bin/tlp-switch-user
+rm /usr/sbin/tlp-switch
+rm /usr/sbin/tlp-switch-daemon
+rm /lib/systemd/system/tlp-switch-daemon.service
+rm -rf /usr/share/tlp-switch

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+mkdir /run/tlp-switch
+mkfifo /run/tlp-switch/switch
+touch /run/tlp-switch/current
+touch /run/tlp-switch/states
+chmod 777 /run/tlp-switch/switch
+TLPPATH2="/etc/tlp.d/switch"
+[ -d $TLPPATH2 ] || mkdir -p $TLPPATH2
+rm /etc/tlp.d/??-*.conf
+touch /etc/tlp.d/00-template.conf
+[ -f $TLPPATH2/default.conf ] || touch $TLPPATH2/default.conf
+tlp-switch switch-quiet default
+while [ 1 -eq 1 ]
+do
+    TEM=`cat /run/tlp-switch/switch`
+    if [ $TEM == '@1' ]
+    then
+        tlp-switch show
+    else
+        tlp-switch switch $TEM
+    fi
+done
