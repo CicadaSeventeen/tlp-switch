@@ -1,3 +1,5 @@
+A program to manully switch power mode like power-profiles-daemon,but basing on tlp
+
 INSTALL:
 chmod 755 ./install
 sudo ./install
