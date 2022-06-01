@@ -1,7 +1,5 @@
-A program to manully change power mode like power-profiles-daemon but basing on TLP
-
 INSTALL:
 chmod 755 ./install
-sudo ./install
+sudo ./install\
 
 Configue files are in /etc/tlp.d
