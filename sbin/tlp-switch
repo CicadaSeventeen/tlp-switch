@@ -46,10 +46,10 @@ then
     echo $1 > /run/tlp-switch/current
     umount -fl /etc/tlp.d/00-template.conf
     TEM3=`tlp-stat -p|grep scaling_governor`
-    sentnot -a tlp-switch -i /usr/local/share/tlp-switch.png "Switched to power mode $1" "CPU governor: ${TEM3#*=}"
+    sentnot -a tlp-switch -i /usr/local/share/tlp-switch/tlp-switch.png "Switched to power mode $1" "CPU governor: ${TEM3#*=}"
 else
     echo "No such power level."
-    sentnot -a tlp-switch -i /usr/local/share/tlp-switch.png "Switch power mode failed."
+    sentnot -a tlp-switch -i /usr/local/share/tlp-switch/tlp-switch.png "Switch power mode failed."
 fi
 }
 
@@ -161,7 +161,7 @@ case $1 in
     switch $2
     ;;
     switch-quiet)
-    switch-q $2
+    switch-quiet $2
     ;;
     list)
     list

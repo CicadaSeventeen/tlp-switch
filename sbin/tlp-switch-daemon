@@ -9,7 +9,7 @@ TLPPATH2="/etc/tlp.d/switch"
 rm /etc/tlp.d/??-*.conf
 touch /etc/tlp.d/00-template.conf
 [ -f $TLPPATH2/default.conf ] || touch $TLPPATH2/default.conf
-tlp-switch switch-quiet default -n
+tlp-switch switch-quiet default
 while [ 1 -eq 1 ]
 do
     TEM=`cat /run/tlp-switch/switch`
