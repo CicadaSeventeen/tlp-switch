@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+function switch(){
+echo "$1" > /run/tlp-switch/switch
+}
+
+function list(){
+TLPPATH2="/etc/tlp.d/switch"
+for tem2 in `ls $TLPPATH2`
+    do
+        echo ${tem2%.*}
+    done
+}
+
+function showc(){
+echo "@1" > /run/tlp-switch/switch
+sleep 1
+echo "power mode level:"
+cat /run/tlp-switch/current
+echo
+echo "tlp-stat -p:"
+cat /run/tlp-switch/states
+}
+
+function showhelp(){
+
+echo "usage: $0 <command>"
+echo "<command>:"
+echo "switch <name>         switch to the power level"
+echo "list                  list all existing power level"
+echo "show                  show current power level"
+echo "help                  show this help"
+echo
+echo "note:"
+echo "      Please do not use space in <name>"
+echo "      Please do not use <name> started with @"
+echo "      Save PATH is /etc/tlp.d/switch"
+}
+
+
+case $1 in
+    switch)
+    switch $2
+    ;;
+    list)
+    list
+    ;;
+    show)
+    showc
+    ;;
+    *)
+    showhelp
+    ;;
+esac
+

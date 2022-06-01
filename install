@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+cp ./bin/* /usr/local/bin
+cp ./sbin/* /usr/local/sbin
+cp ./etc/systemd/system/* /etc/systemd/system/
+cp ./share/* /usr/local/share
+systemctl enable tlp-switch-daemon.service
+
