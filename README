@@ -1,5 +1,5 @@
 INSTALL:
 chmod 755 ./install
-sudo ./install\
+sudo ./install
 
 Configue files are in /etc/tlp.d
