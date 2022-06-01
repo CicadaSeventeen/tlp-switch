@@ -10,6 +10,12 @@ UNINSTALL:
 chmod 755 ./uninstall
 sudo ./uninstall
 
+VERSION UPDATE:
+chmod 755 ./update
+sudo ./update
+Note: This may not be safe due to some bugs. Take care.
+
+
 Configure files are in /etc/tlp.d
 Temporary files are in /run/tlp-switch
 
