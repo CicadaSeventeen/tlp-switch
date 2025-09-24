@@ -1,20 +1,29 @@
 ## Obsoleted!
 ### se https://github.com/CicadaSeventeen/tlp-multimode
 A program aiming to make it easy to change power mode manully like power-profiles-daemon, but basing op TLP.
+
 Only systemd init is supported. For other init, please start tlp-switch-daemon by root.
+
 If anyone writes scipts to make it work in other inits please tell me.
 
+
 INSTALL:
+```
 chmod 755 ./install
 sudo ./install
+```
 
 UNINSTALL:
+```
 chmod 755 ./uninstall
 sudo ./uninstall
+```
 
 VERSION UPDATE:
+```
 chmod 755 ./update
 sudo ./update
+```
 Note: This may not be safe due to some bugs. Take care.
 
 
